@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ahmed & No Name — Wedding Invitation</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --bg-card: #FFFFFF;
+      --text-dark: #2C2A29;
+      --text-muted: #7A7571;
+      --gold: #C5A059;
+      --gold-light: #E6D5B8;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-script: 'Great Vibes', cursive;
+      --font-sans: 'Montserrat', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 1. ENVELOPE OVERLAY */
+    #invitation-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #fdfbf7 0%, #efe8dc 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      cursor: pointer;
+      transition: opacity 1s ease, transform 1s ease, visibility 1s;
+    }
+
+    #invitation-overlay.opened {
+      opacity: 0;
+      transform: scale(1.08);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .wax-seal {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #d4af37, #997422);
+      box-shadow: 0 10px 25px rgba(153, 116, 34, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      color: #fff;
+      letter-spacing: 2px;
+      margin-bottom: 1.8rem;
+      border: 2px dashed rgba(255, 255, 255, 0.45);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .overlay-subtitle {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .overlay-names {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+    }
+
+    .tap-hint {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 4px;
+    }
+
+    /* 2. FLOATING AUDIO BUTTON */
+    #music-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--gold-light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      z-index: 100;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--gold);
+      transition: transform 0.3s ease;
+    }
+
+    #music-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    /* 3. GENERAL SECTION STYLING */
+    section {
+      padding: 5rem 1.5rem;
+      max-width: 850px;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.9s ease-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sub-heading {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      color: var(--text-dark);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .divider span {
+      width: 50px;
+      height: 1px;
+      background: var(--gold-light);
+    }
+
+    .divider i {
+      color: var(--gold);
+      font-style: normal;
+      font-size: 0.9rem;
+    }
+
+    /* 4. HERO SECTION */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 3rem;
+    }
+
+    .monogram {
+      font-family: var(--font-script);
+      font-size: 2.8rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 7vw, 4.5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin: 0.5rem 0;
+    }
+
+    .hero h1 .amp {
+      font-family: var(--font-script);
+      color: var(--gold);
+      font-size: 0.85em;
+      padding: 0 0.4rem;
+    }
+
+    .illustration-frame {
+      margin: 2.2rem auto 1rem;
+      width: 320px;
+      max-width: 90vw;
+      border-radius: 180px 180px 16px 16px;
+      overflow: hidden;
+      border: 6px solid #fff;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07);
+      background: #fff;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .illustration-frame img {
+      width: 100%;
+      height: auto;
+      display: none;
+    }
+
+    .change-photo-btn {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .scroll-down {
+      margin-top: 1rem;
+      display: inline-block;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* 5. COUNTDOWN SECTION */
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .time-box {
+      background: var(--bg-card);
+      padding: 1.5rem 0.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--gold-light);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .time-box b {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .time-box span {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+    }
+
+    /* 6. DETAILS CARDS */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .detail-card {
+      background: var(--bg-card);
+      padding: 2.2rem 1.5rem;
+      border-radius: 14px;
+      border: 1px solid var(--gold-light);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    }
+
+    .detail-card h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    .detail-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* 7. VENUE & DIRECTIONS */
+    .venue-illustration {
+      max-width: 480px;
+      margin: 1.5rem auto 2rem;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 5px solid #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    }
+
+    .venue-illustration img {
+      width: 100%;
+      display: block;
+    }
+
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: background 0.3s ease, transform 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-gold:hover {
+      background: #b08d47;
+      transform: translateY(-2px);
+    }
+
+    /* 8. RSVP FORM */
+    .rsvp-box {
+      background: var(--bg-card);
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      border: 1px solid var(--gold-light);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1px solid #e2dcd3;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      outline: none;
+    }
+
+    /* 9. FOOTER */
+    footer {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      border-top: 1px solid var(--gold-light);
+      color: var(--text-muted);
+    }
+
+    footer .names {
+      font-family: var(--font-script);
+      font-size: 2.4rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .countdown-grid {
+        gap: 0.6rem;
+      }
+      .time-box b {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. TAP TO OPEN OVERLAY -->
+  <div id="invitation-overlay" role="dialog" aria-label="Wedding invitation — tap to open">
+    <div class="wax-seal">A</div>
+    <p class="overlay-subtitle">Together with their families</p>
+    <div class="overlay-names">Ahmed &amp; No Name</div>
+    <span class="tap-hint">Tap to open invitation</span>
+  </div>
+
+  <!-- BACKGROUND AUDIO: العو جه العو حضر -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="song.mp3" type="audio/mpeg">
+    <source src="song.mp3.mp3" type="audio/mpeg">
+    <source src="song.m4a" type="audio/mp4">
+  </audio>
+  <button id="music-toggle" aria-label="Toggle Music" title="Play/Pause Music">♪</button>
+
+  <main>
+    <!-- 2. HERO SECTION -->
+    <section class="hero visible">
+      <div class="monogram">A &amp; N</div>
+      <p class="sub-heading">11 . 11 . 2026</p>
+      <h1>
+        <span>Ahmed</span>
+        <span class="amp">&amp;</span>
+        <span>No Name</span>
+      </h1>
+      <div class="divider"><span></span><i>✦</i><span></span></div>
+
+      <!-- برواز صورة العروسين مع الحفظ التلقائي -->
+      <figure class="illustration-frame" id="frame-box">
+        <img id="couple-img" alt="Ahmed & No Name Illustration">
+
+        <div id="img-picker-box" style="padding: 2rem 1rem; text-align: center;">
+          <p style="font-size: 0.9rem; color: var(--text-dark); margin-bottom: 1rem; font-weight: 500;">
+            اختار صورة العروسين مرة واحدة وهتتحفظ تلقائياً:
+          </p>
+          <label class="btn-gold" style="padding: 0.8rem 1.4rem; font-size: 0.78rem; cursor: pointer; display: inline-block;">
+            📸 اضغط هنا لاختيار الصورة
+            <input type="file" id="manual-img-picker" accept="image/*" style="display: none;">
+          </label>
+        </div>
+      </figure>
+
+      <label id="change-photo-label" class="change-photo-btn">
+        تغيير الصورة
+        <input type="file" id="change-img-picker" accept="image/*" style="display: none;">
+      </label>
+
+      <a href="#countdown" class="scroll-down">↓ Scroll Down</a>
+    </section>
+
+    <!-- 3. COUNTDOWN SECTION -->
+    <section id="countdown">
+      <p class="sub-heading">Until we say</p>
+      <h2>I Do</h2>
+      <div class="countdown-grid" id="timer-box">
+        <div class="time-box"><b id="days">00</b><span>Days</span></div>
+        <div class="time-box"><b id="hours">00</b><span>Hours</span></div>
+        <div class="time-box"><b id="minutes">00</b><span>Minutes</span></div>
+        <div class="time-box"><b id="seconds">00</b><span>Seconds</span></div>
+      </div>
+      <p id="wedding-today" hidden style="margin-top:1.5rem; font-family:var(--font-serif); font-size:1.5rem;">
+        Today is the day. 🤍
+      </p>
+    </section>
+
+    <!-- 4. CELEBRATION DETAILS -->
+    <section id="details">
+      <p class="sub-heading">The Celebration</p>
+      <h2>Save the Evening</h2>
+      <div class="details-grid">
+        <article class="detail-card">
+          <h3>Date</h3>
+          <p>Wednesday, November 11, 2026</p>
+          <p>11 / 11 / 2026</p>
+        </article>
+        <article class="detail-card">
+          <h3>Time</h3>
+          <p>Doors Open: 7:00 PM</p>
+          <p>Ceremony Starts: 8:00 PM</p>
+        </article>
+        <article class="detail-card">
+          <h3>Venue</h3>
+          <p>Mall of Egypt (مول مصر)</p>
+          <p>Al Wahat Road, 6th of October City</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. LOCATION & MAP -->
+    <section id="venue">
+      <p class="sub-heading">Where we celebrate</p>
+      <h2>The Venue</h2>
+      <figure class="venue-illustration">
+        <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80" alt="Mall of Egypt">
+      </figure>
+      <a href="https://maps.app.goo.gl/uX3QxP7WzXbEexUj8" target="_blank" rel="noopener" class="btn-gold">Get Directions</a>
+    </section>
+
+    <!-- 6. RSVP SECTION -->
+    <section id="rsvp">
+      <p class="sub-heading">Kindly Reply</p>
+      <h2>Will You Join Us?</h2>
+
+      <div class="rsvp-box">
+        <form id="rsvp-form">
+          <div class="form-group">
+            <label for="guest-name">Full Name</label>
+            <input type="text" id="guest-name" required placeholder="Enter your name" />
+          </div>
+          <div class="form-group">
+            <label for="attendance">Will you attend?</label>
+            <select id="attendance" required>
+              <option value="Joyfully Accepts">Joyfully Accepts 🤍</option>
+              <option value="Regretfully Declines">Regretfully Declines</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Note for the couple (Optional)</label>
+            <textarea id="message" rows="3" placeholder="Write your wishes..."></textarea>
+          </div>
+          <button type="submit" class="btn-gold" style="width:100%;">Confirm Attendance</button>
+        </form>
+
+        <div id="rsvp-thankyou" hidden style="padding: 1rem 0;">
+          <h3 style="font-family:var(--font-serif); font-size:1.8rem; margin-bottom:0.5rem;">Thank You!</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.2rem;">
+            Your confirmation is ready to be sent.
+          </p>
+          <a id="gmail-link" href="#" target="_blank" rel="noopener" class="btn-gold">Send Confirmation</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 7. FOOTER -->
+  <footer>
+    <div class="names">Ahmed &amp; No Name</div>
+    <p style="font-size:0.8rem; letter-spacing:2px; text-transform:uppercase;">11 . 11 . 2026 — With all our love</p>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const coupleImg = document.getElementById('couple-img');
+    const pickerBox = document.getElementById('img-picker-box');
+    const changeLabel = document.getElementById('change-photo-label');
+
+    function showCouplePhoto(dataUrl) {
+      coupleImg.src = dataUrl;
+      coupleImg.style.display = 'block';
+      pickerBox.style.display = 'none';
+      changeLabel.style.display = 'inline-block';
+    }
+
+    // 1. لو الصورة محفوظة قبل كده اعرضها فوراً، أو جرب تقرأها من الفولدر
+    const savedPhoto = localStorage.getItem('wedding_couple_photo');
+    if (savedPhoto) {
+      showCouplePhoto(savedPhoto);
+    } else {
+      // محاولة قراءة أي ملف صورة جنب الكود
+      const testImg = new Image();
+      testImg.onload = () => showCouplePhoto('couple.jpg');
+      testImg.onerror = () => {
+        const testPng = new Image();
+        testPng.onload = () => showCouplePhoto('couple.png');
+        testPng.src = 'couple.png';
+      };
+      testImg.src = 'couple.jpg';
+    }
+
+    // 2. لما المستخدم يختار الصورة من جهازه، نحفظها للأبد جوه المتصفح
+    function handleImageFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const base64Data = event.target.result;
+        try {
+          localStorage.setItem('wedding_couple_photo', base64Data);
+        } catch (err) {
+          console.warn('Image too large for storage, displaying directly.');
+        }
+        showCouplePhoto(base64Data);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('manual-img-picker').addEventListener('change', (e) => {
+      handleImageFile(e.target.files[0]);
+    });
+
+    document.getElementById('change-img-picker').addEventListener('change', (e) => {
+      handleImageFile(e.target.files[0]);
+    });
+
+    // 3. تشغيل الأغنية وفتح الغلاف
+    const overlay = document.getElementById('invitation-overlay');
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-toggle');
+    let isPlaying = false;
+
+    overlay.addEventListener('click', () => {
+      overlay.classList.add('opened');
+      music.play().then(() => {
+        isPlaying = true;
+        musicBtn.textContent = '❚❚';
+      }).catch(() => {
+        isPlaying = false;
+      });
+    });
+
+    musicBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        music.pause();
+        musicBtn.textContent = '♪';
+      } else {
+        music.play();
+        musicBtn.textContent = '❚❚';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    // 4. العداد التنازلي: 11 نوفمبر 2026
+    const weddingDate = new Date("November 11, 2026 19:00:00").getTime();
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = weddingDate - now;
+
+      if (distance <= 0) {
+        clearInterval(timer);
+        document.getElementById("timer-box").style.display = "none";
+        document.getElementById("wedding-today").hidden = false;
+        return;
+      }
+
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").textContent = String(d).padStart(2, '0');
+      document.getElementById("hours").textContent = String(h).padStart(2, '0');
+      document.getElementById("minutes").textContent = String(m).padStart(2, '0');
+      document.getElementById("seconds").textContent = String(s).padStart(2, '0');
+    }, 1000);
+
+    // 5. تأثير الحركة عند النزول
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+    // 6. الفورم
+    const rsvpForm = document.getElementById('rsvp-form');
+    const thankYouBox = document.getElementById('rsvp-thankyou');
+    const gmailLink = document.getElementById('gmail-link');
+    const coupleEmail = "your-email@gmail.com";
+
+    rsvpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('guest-name').value;
+      const status = document.getElementById('attendance').value;
+      const note = document.getElementById('message').value;
+
+      const subject = encodeURIComponent(`Wedding RSVP - ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nResponse: ${status}\nMessage: ${note}`);
+
+      gmailLink.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${coupleEmail}&su=${subject}&body=${body}`;
+
+      rsvpForm.hidden = true;
+      thankYouBox.hidden = false;
+    });
+  </script>
+</body>
+</html>
